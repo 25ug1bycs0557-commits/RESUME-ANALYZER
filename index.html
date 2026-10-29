@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="A private, local-first resume analyzer for placement preparation.">
+    <title>Careerly — Resume intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="#dashboard" aria-label="Careerly dashboard">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 18V6l7 8 7-8v12"/><path d="M5 18h14"/></svg></span>
+          <span>careerly<span class="brand-dot">.</span></span>
+        </a>
+        <div class="workspace-label">WORKSPACE</div>
+        <nav class="side-nav" aria-label="Main navigation">
+          <a class="nav-link active" href="#dashboard" data-page="dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg><span>Dashboard</span></a>
+          <a class="nav-link" href="#analyze" data-page="analyze"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg><span>Analyze resume</span><span class="nav-count">01</span></a>
+          <a class="nav-link" href="#history" data-page="history"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg><span>Analysis history</span></a>
+          <a class="nav-link" href="#jobs" data-page="jobs"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"/></svg><span>Job recommendations</span></a>
+          <a class="nav-link" href="#roadmap" data-page="roadmap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2M8 2v2M16 2v2"/></svg><span>Learning roadmap</span></a>
+          <a class="nav-link" href="#tips" data-page="tips"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.2-.9-2-2.3-2-4a6 6 0 1 1 12 0c0 1.7-.8 3.1-2 4-.7.6-1 1.2-1 2h-6c0-.8-.3-1.4-1-2Z"/></svg><span>Resume tips</span></a>
+        </nav>
+        <div class="sidebar-spacer"></div>
+        <div class="sidebar-help">
+          <div class="help-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.4 1.6c-1.2 1-2 1.3-2 2.9M12 17h.01"/></svg></div>
+          <strong>Need a hand?</strong>
+          <p>Explore practical tips to make your resume stand out.</p>
+          <a href="#tips" data-page="tips">Browse resume tips <span>→</span></a>
+        </div>
+        <a class="nav-link settings-link" href="#settings" data-page="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.6a8 8 0 0 1-1.5.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.5-.9l-1.7.6-1.4-2.4 1.4-1.1a7 7 0 0 1 0-1.8l-1.4-1.1 1.4-2.4 1.7.6a8 8 0 0 1 1.5-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.5.9l1.7-.6 1.4 2.4-1.4 1.1a7 7 0 0 1 0 1.8Z"/></svg><span>Settings</span></a>
+        <div class="profile-mini"><div class="avatar">ST</div><div><strong>Student account</strong><small>Placement prep</small></div><button class="icon-button profile-menu" aria-label="Profile menu">···</button></div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <button class="icon-button mobile-menu" id="mobileMenu" aria-label="Open navigation"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+          <div class="breadcrumbs"><span>Workspace</span><span class="crumb-slash">/</span><strong id="pageCrumb">Dashboard</strong></div>
+          <div class="top-actions">
+            <span class="local-status"><i></i> Local analysis</span>
+            <button class="icon-button theme-toggle" id="themeToggle" aria-label="Toggle dark theme"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button>
+            <div class="top-avatar" title="Student account">ST</div>
+          </div>
+        </header>
+        <div class="page-content" id="pageContent"></div>
+        <footer class="app-footer"><span>Careerly <span class="brand-dot">·</span> Built for your next opportunity</span><span><i class="privacy-lock">⌑</i> Your resume stays on this device</span></footer>
+      </main>
+      <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+    </div>
+    <input id="fileInput" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden>
+    <script src="analyzer.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
