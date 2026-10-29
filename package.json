@@ -1,0 +1,15 @@
+{
+  "name": "careerly-resume-analyzer",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "security:secrets": "gitleaks dir --redact=100 .",
+    "security:secrets:history": "gitleaks git . --log-opts=--all --redact=100"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "fast-check": "^4.3.0"
+  }
+}

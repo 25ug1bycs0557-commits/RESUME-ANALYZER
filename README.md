@@ -10,7 +10,22 @@ You can open `index.html` directly for pasted-text, DOCX, and TXT analysis. To u
 py -m http.server 8000
 ```
 
-Then open `http://localhost:8000`. PDF.js is loaded from jsDelivr only when a PDF is selected. If the library cannot be reached, the app shows an error and you can paste the resume text instead. DOCX and TXT extraction work locally in the browser without an external library.
+Then open `http://localhost:8000`. PDF.js is bundled locally and loaded only when a PDF is selected. DOCX and TXT extraction also work locally in the browser.
+
+## Run tests
+
+The analysis engine's unit and property-based tests use Node.js 18 or newer. Install the development dependency once, then run:
+
+```powershell
+npm install
+npm test
+```
+
+Property tests use fast-check with a fixed seed and 150 generated cases per property. The test suite runs locally and does not call external AI services or network APIs.
+
+## Secret scanning
+
+Install Gitleaks using its official installation instructions, then run `npm run security:secrets` before committing. To scan reachable Git history as well, run `npm run security:secrets:history`. Both commands redact detected secret values from output.
 
 ## What the analysis does
 
@@ -20,7 +35,7 @@ Analysis is isolated in `analyzer.js` so an AI provider adapter can be added lat
 
 ## Privacy
 
-Resume files and extracted text are processed in the browser and are not uploaded to an application server. PDF extraction downloads the PDF.js library code from jsDelivr, but does not send resume content to that CDN. DOCX and TXT extraction are local and do not require a CDN. Analysis history is off by default. When enabled in Settings, the app saves result summaries, detected skills, recommendations, score, and the file name in browser storage; it does not save the original file or full resume text. Clear saved data in Settings to remove local Careerly data.
+Resume files and extracted text are processed in the browser and are not uploaded to an application server. PDF.js is bundled with the app, so PDF extraction does not contact a third-party code CDN. DOCX and TXT extraction also run locally. Analysis history is off by default. When enabled in Settings, the app saves result summaries, detected skills, recommendations, score, and the file name in browser storage; it does not save the original file or full resume text. Clear saved data in Settings to remove local Careerly data.
 
 ## Supported files
 
@@ -28,5 +43,7 @@ Resume files and extracted text are processed in the browser and are not uploade
 - DOCX: document text is extracted in the browser.
 - TXT: plain text.
 - Maximum file size: 5 MB.
+
+PDF.js 4.4.168 is included locally under the Apache-2.0 license; see [its license](./vendor/pdfjs-dist-4.4.168/LICENSE).
 
 Password-protected, corrupt, empty, unsupported, or textless documents produce an explicit error. You can always paste resume text instead.

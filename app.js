@@ -310,9 +310,9 @@
 
   async function extractPdf(file) {
     let pdfjs;
-    try { pdfjs = await import("https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.min.mjs"); }
-    catch (error) { throw new Error("PDF text extraction could not load its browser library. Check your internet connection, or paste the resume text instead."); }
-    pdfjs.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs";
+    try { pdfjs = await import("./vendor/pdfjs-dist-4.4.168/build/pdf.min.mjs"); }
+    catch (error) { throw new Error("PDF text extraction could not load its local browser library. Open Careerly through a local web server or paste the resume text instead."); }
+    pdfjs.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdfjs-dist-4.4.168/build/pdf.worker.min.mjs", document.baseURI).href;
     let documentProxy;
     try { documentProxy = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise; }
     catch (error) { throw new Error("This PDF could not be opened. It may be damaged or password-protected. Try exporting an unlocked PDF or paste the text."); }

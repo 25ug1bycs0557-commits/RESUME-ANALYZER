@@ -1,0 +1,28 @@
+# Dependencies and local build output
+node_modules/
+dist/
+coverage/
+npm-debug.log*
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.key
+*.p12
+*.pfx
+key.pem
+private.pem
+*_private.pem
+*-private.pem
+id_*.pem
+*.credentials
+credentials.json
+
+# Local uploads and test data that may contain personal information
+uploads/
+tmp/
+temp/
+test-artifacts/
+local-test-data/
+*.personal-data
