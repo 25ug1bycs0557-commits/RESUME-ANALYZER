@@ -1,7 +1,10 @@
 {
   "name": "careerly-resume-analyzer",
   "private": true,
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
     "test": "node --test",
     "security:secrets": "gitleaks dir --redact=100 .",
     "security:secrets:history": "gitleaks git . --log-opts=--all --redact=100"
@@ -9,7 +12,21 @@
   "engines": {
     "node": ">=18"
   },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.0",
+    "express": "^5.1.0",
+    "multer": "^2.0.0"
+  },
   "devDependencies": {
     "fast-check": "^4.3.0"
+  },
+  "dependencies": {
+    "adm-zip": "^0.6.1",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "multer": "^2.5.0"
   }
 }

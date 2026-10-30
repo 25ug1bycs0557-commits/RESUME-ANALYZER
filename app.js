@@ -46,6 +46,31 @@
     }
   }
 
+  function getApiBaseUrl() {
+    return (window.CAREERLY_API_BASE || (window.location.origin && window.location.origin !== "null" ? window.location.origin : "http://localhost:3000")).replace(/\/$/, "");
+  }
+
+  async function apiRequest(path, options) {
+    const urls = [getApiBaseUrl() + path, "http://localhost:3000" + path];
+    let lastError = null;
+
+    for (const url of urls) {
+      try {
+        const response = await fetch(url, Object.assign({ headers: { "Content-Type": "application/json" } }, options));
+        const payload = await response.json().catch(function () { return {}; });
+        if (!response.ok) {
+          throw new Error(payload.error || "The server rejected the request.");
+        }
+        return payload;
+      } catch (error) {
+        lastError = error;
+        if (url === urls[urls.length - 1]) break;
+      }
+    }
+
+    throw lastError || new Error("The backend could not be reached.");
+  }
+
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
@@ -455,7 +480,7 @@
     render();
   }
 
-  function runAnalysis() {
+  async function runAnalysis() {
     const textarea = document.getElementById("resumeText");
     const errorBox = document.getElementById("inputError");
     const button = document.getElementById("runAnalysis");
@@ -464,33 +489,40 @@
     if (text.trim().length < 60) { errorBox.textContent = "Please provide at least 60 characters so the analyzer can give useful feedback."; textarea.focus(); return; }
     errorBox.textContent = "";
     button.disabled = true;
-    button.innerHTML = '<span class="loading-spinner"></span> Analyzing on this device…';
-    window.setTimeout(function () {
-      try {
-        latestAnalysis = ResumeAnalyzer.analyze(text);
-        latestAnalysis.fileName = selectedFile ? selectedFile.name : "Pasted resume";
-        if (preferences.saveHistory) {
-          const savedResult = Object.assign({}, latestAnalysis, {
-            summary: "This resume included " + latestAnalysis.skills.length + " explicitly detected skills. " + latestAnalysis.suggestedDirection + " is one direction to explore.",
-            facts: {
-              education: latestAnalysis.sections.education ? ["Education section detected"] : [],
-              experience: latestAnalysis.sections.experience ? ["Experience section detected"] : [],
-              projects: latestAnalysis.sections.projects ? ["Projects section detected"] : [],
-              achievements: latestAnalysis.facts.achievements.length ? ["Achievement evidence detected"] : []
-            }
-          });
-          history = [savedResult].concat(history.filter(function (entry) { return entry.createdAt !== savedResult.createdAt; })).slice(0, 20);
-          try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); }
-          catch (error) { notify("Analysis completed, but history could not be saved in browser storage.", "error"); console.error("Could not save history.", error); }
-        }
-        render();
-        window.setTimeout(function () { const results = document.getElementById("analysisResults"); if (results) results.scrollIntoView({ behavior: "smooth", block: "start" }); }, 50);
-      } catch (error) {
-        errorBox.textContent = error.message || "Analysis could not be completed.";
-        button.disabled = false;
-        button.innerHTML = icon("spark", 17) + " Analyze resume";
+    button.innerHTML = '<span class="loading-spinner"></span> Analyzing…';
+
+    try {
+      const payload = await apiRequest("/api/analyze", {
+        method: "POST",
+        body: JSON.stringify({ resumeText: text })
+      }).catch(function () {
+        return { analysis: ResumeAnalyzer.analyze(text) };
+      });
+
+      latestAnalysis = payload.analysis || ResumeAnalyzer.analyze(text);
+      latestAnalysis.fileName = selectedFile ? selectedFile.name : "Pasted resume";
+      if (preferences.saveHistory) {
+        const savedResult = Object.assign({}, latestAnalysis, {
+          summary: "This resume included " + latestAnalysis.skills.length + " explicitly detected skills. " + latestAnalysis.suggestedDirection + " is one direction to explore.",
+          facts: {
+            education: latestAnalysis.sections.education ? ["Education section detected"] : [],
+            experience: latestAnalysis.sections.experience ? ["Experience section detected"] : [],
+            projects: latestAnalysis.sections.projects ? ["Projects section detected"] : [],
+            achievements: latestAnalysis.facts.achievements.length ? ["Achievement evidence detected"] : []
+          }
+        });
+        history = [savedResult].concat(history.filter(function (entry) { return entry.createdAt !== savedResult.createdAt; })).slice(0, 20);
+        try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); }
+        catch (error) { notify("Analysis completed, but history could not be saved in browser storage.", "error"); console.error("Could not save history.", error); }
       }
-    }, 420);
+      render();
+      window.setTimeout(function () { const results = document.getElementById("analysisResults"); if (results) results.scrollIntoView({ behavior: "smooth", block: "start" }); }, 50);
+    } catch (error) {
+      errorBox.textContent = error.message || "Analysis could not be completed.";
+    } finally {
+      button.disabled = false;
+      button.innerHTML = icon("spark", 17) + " Analyze resume";
+    }
   }
 
   fileInput.addEventListener("change", function () { handleFile(fileInput.files[0]); });

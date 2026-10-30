@@ -23,6 +23,59 @@ npm test
 
 Property tests use fast-check with a fixed seed and 150 generated cases per property. The test suite runs locally and does not call external AI services or network APIs.
 
+## Backend API
+
+The project now includes a lightweight Express API that keeps the existing browser-first analyzer as the default fallback while exposing structured endpoints for frontend integration and deployment. The app can run with either the static browser flow or the API-backed flow.
+
+### Local backend startup
+
+```powershell
+npm install
+npm start
+```
+
+The API listens on `http://localhost:3000` and exposes these primary endpoints:
+
+- `GET /health` and `GET /api/health` — service health check
+- `POST /api/upload` — accepts a PDF, DOCX, or TXT resume file and extracts readable text
+- `POST /api/analyze` — returns the same rule-based analysis payload as the browser engine
+- `POST /api/job-recommendations` — returns role recommendations and missing-skill gaps
+- `POST /api/learning-roadmap` — returns a practical learning roadmap
+- `GET /api/history`, `POST /api/history`, `DELETE /api/history/:id`, `DELETE /api/history` — in-memory saved analysis history
+
+The API automatically falls back to the local analyzer when no external AI provider is configured. This keeps the app functional without fake AI claims or secret leakage.
+
+### Environment configuration
+
+Copy `.env.example` to `.env` and set local values if needed:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Supported variables:
+
+- `PORT` — local backend port, default `3000`
+- `ALLOWED_ORIGINS` — comma-separated allowed CORS origins
+- `AI_PROVIDER` — optional, set to `local` unless a real provider is configured
+- `AI_API_KEY` — server-side API key for a future external LLM
+- `AI_API_URL` — optional OpenAI-compatible endpoint
+
+No real secrets are included in the repository.
+
+## Vercel deployment
+
+This project is ready for a static-app deployment pattern with a serverless API route. The repository includes a Vercel-compatible `api/index.js` wrapper and a root `vercel.json` route for `/api/*` requests.
+
+To deploy:
+
+```powershell
+npm install
+vercel --prod
+```
+
+If your frontend and API are served from the same Vercel project, the browser app can use the relative `/api/...` path automatically. If the API is hosted separately, set `window.CAREERLY_API_BASE` in the browser to the API origin before analyzing a resume.
+
 ## Secret scanning
 
 Install Gitleaks using its official installation instructions, then run `npm run security:secrets` before committing. To scan reachable Git history as well, run `npm run security:secrets:history`. Both commands redact detected secret values from output.
